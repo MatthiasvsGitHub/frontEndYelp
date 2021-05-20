@@ -13,6 +13,7 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 export default function Restaurant({ data }) {
     const [center, setCenter] = useState()
     const [mapData, setMapData] = useState({})
+    const [zoomLevel, setZoomLevel] = useState(8)
     const { name } = useParams()
 
     const containerStyle = {
@@ -35,6 +36,11 @@ export default function Restaurant({ data }) {
     
     const setLocation = () => {
         setCenter(mapData)
+        
+     }
+
+     const setZoom = () => {
+        setZoomLevel(16)
      }
 
     const { isLoaded } = useJsApiLoader({
@@ -81,12 +87,15 @@ export default function Restaurant({ data }) {
                         }
                     </Col>
                     <Col>
-                    <button onClick={setLocation}>Load Map</button>
+                    <button onClick={(() => {
+                        setLocation()
+                        setZoom()
+                        })}>Load Map</button>
                         <div className="mapDiv">
                             {isLoaded && center && <GoogleMap
                                 mapContainerStyle={containerStyle}
                                 center={center}
-                                zoom={16}
+                                zoom={zoomLevel}
                                 onLoad={onLoad}
                                 onUnmount={onUnmount}
                             >
