@@ -1,0 +1,35 @@
+[
+    {
+        "name": "Restaurant 1",
+        "tags": [
+            "Italian", "Cheap", "Vegetarian"
+        ],
+        "cityName": "Berlin",
+        "streetName": "Unter den Linden 10",
+        "rating": 5,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "image": "https://cdn.pixabay.com/photo/2014/09/17/20/26/restaurant-449952_960_720.jpg"
+    },
+    {
+        "name": "Restaurant 2",
+        "tags": [
+            "Greek", "Regular", "Meat"
+        ],
+        "cityName": "Munich",
+        "streetName": "Burgstraße 7",
+        "rating": 4,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "image":  "https://cdn.pixabay.com/photo/2014/09/17/20/26/restaurant-449952_960_720.jpg"
+    },
+    {
+        "name": "Restaurant 2",
+        "tags": [
+            "German", "Expensive", "Vegan"
+        ],
+        "cityName": "Frankfurt",
+        "streetName": "Schumannstraße 45",
+        "rating": 4.5,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "image":  "https://cdn.pixabay.com/photo/2014/09/17/20/26/restaurant-449952_960_720.jpg"
+    }
+]
