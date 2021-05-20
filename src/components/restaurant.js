@@ -1,20 +1,59 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-/* import { createControlComponent } from '@react-leaflet/core'
-import { Control } from 'leaflet' */
-/* import leaflet from 'leaflet' */
 import { useParams, useHistory, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Container, Row, Col } from 'reactstrap';
 import { Badge } from 'react-bootstrap'
 import './restaurant.css'
-/* import 'leaflet/dist/leaflet.css'; */
+import Axios from 'axios'
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+
+
+
 
 
 export default function Restaurant({ data }) {
+    const [center, setCenter] = useState()
+    const [mapData, setMapData] = useState({})
     const { name } = useParams()
 
+    const containerStyle = {
+        width: '400px',
+        height: '500px'
+    };
 
-    const position = [51.505, -0.09]
+    useEffect(() => {
+        setLocation()
+        fetchData();
+      }, []);
+
+    const fetchData = async () => {
+        await Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${data[1].cityName}, ${data[1].streetName}, Deutschland&key=6002168ae2b4471cbbe0ff9ff0c1be70`)
+          .then((response) => {
+              setMapData(response.data.results[0].geometry)
+            })
+          .catch((error) => console.log(error));
+      };
+    
+    const setLocation = () => {
+        setCenter(mapData)
+     }
+
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "AIzaSyDyVZqBLSCxCdN6tRbcgZyLFRv6A-a7fjQ"
+    })
+
+    const [map, setMap] = React.useState(null)
+
+    const onLoad = React.useCallback(function callback(map) {
+        const bounds = new window.google.maps.LatLngBounds();
+        map.fitBounds(bounds);
+        setMap(map)
+    }, [])
+
+    const onUnmount = React.useCallback(function callback(map) {
+        setMap(null)
+    }, [])
+    
     return (
         <>
             <h1>This is the restaurant page for restaurant {name}</h1>
@@ -42,19 +81,18 @@ export default function Restaurant({ data }) {
                         }
                     </Col>
                     <Col>
-                    <h2>Leaflet Map</h2>
+                    <button onClick={setLocation}>Load Map</button>
                         <div className="mapDiv">
-                             <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
-                                <TileLayer
-                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                />
-                                <Marker position={position}>
-                                    <Popup>
-                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                    </Popup>
-                                </Marker>
-                            </MapContainer>
+                            {isLoaded && center && <GoogleMap
+                                mapContainerStyle={containerStyle}
+                                center={center}
+                                zoom={16}
+                                onLoad={onLoad}
+                                onUnmount={onUnmount}
+                            >
+                                { /* Child components, such as markers, info windows, etc. */}
+                                <></>
+                            </GoogleMap>}
                         </div>
                     </Col>
                 </Row>
