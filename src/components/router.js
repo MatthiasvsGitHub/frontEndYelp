@@ -1,25 +1,41 @@
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { Button, Nav, Form, Navbar, NavDropdown, FormControl } from 'react-bootstrap';
 import Home from './home'
 import Restaurant from './restaurant'
 import {useEffect, useState} from 'react'
-import Data from './testData.json'
 import Axios from "axios";
 
 export default function Router () {
     const [restaurantName, setRestaurantName] = useState('')
     const [cityName, setCityName] = useState('')
-/*     const [data, setData] = useState([])
+    const [cityId, setCityId] = useState('')
+    const [data, setData] = useState([])
+
+    let history = useHistory();
 
     useEffect(() => {
         fetchData();
-      }, []);
+      }, [cityId]);
+
+
+    const checkID = (cityName) => {
+        if (cityName == 'Munich') setCityId()
+
+    }
 
     const fetchData = async () => {
-        await Axios.get(`link`)
-          .then((response) => console.log(response))
+        await Axios.get(`https://yelp-db.herokuapp.com/restaurants/${cityId}`)
+          .then((response) => setData(response.data.data))
           .catch((error) => console.log(error));
-      }; */
+      };
+
+      const searchRestaurant = () => {
+       if(restaurantName) {let restaurant = data.find((e, index) => {
+            if(e.name == restaurantName)
+		return true;
+        })
+        history.push(`/restaurant/${restaurant._id}`)}
+      }
 
 
     return(
@@ -33,7 +49,7 @@ export default function Router () {
                     </Nav>
                     <Form inline >
                         <FormControl type="text" placeholder="Search Restaurant" className="mr-sm-2" onChange={((e) => setRestaurantName(e.target.value))}/>
-                        <Button href={`/restaurant/${restaurantName}`} variant="outline-success">Search Restaurant</Button>
+                        <Button onClick={searchRestaurant} variant="outline-success">Search Restaurant</Button>
                     </Form>
                     <Form inline>
                         <FormControl type="text" placeholder="Search City" className="mr-sm-2" onChange={((e) => setCityName(e.target.value))}/>
@@ -46,10 +62,10 @@ export default function Router () {
                     <Redirect to="/home" />
             </Route>
             <Route exact path="/home/:city?">
-                    <Home data={Data} />
+                    <Home data={data} />
             </Route>
             <Route exact path="/restaurant/:name?">
-                    <Restaurant data={Data}/>
+                    <Restaurant/>
             </Route>
         </Switch>
         </>

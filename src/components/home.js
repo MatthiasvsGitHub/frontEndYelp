@@ -6,39 +6,45 @@ import './home.css'
 export default function Home({ data }) {
 
     const { city } = useParams()
-    console.log(data)
+
+    const filterFunction = (e) => {
+        if (city === e.city.name) return true
+        else return false
+    }
+
+    let newData = data
+    
+    if (city) newData = data.filter(filterFunction)
+        
+    console.log(newData)
 
 
     return (
         <>
-            <h1>This is the Homepage</h1>
-            <h2>Showing all the Restaurants in City: {city}</h2>
+            
+            <h1>Showing all the Restaurants {city && `in City: ${city}`}</h1>
 
 
 
 
-            {data && data.map((e) => (
+            {newData && newData.map((e) => (
                 <>
                             <Card className='cardElement' style={{ width: '18rem' }}>
-                <Card.Img variant="top" src={e.image} />
+                <Card.Img variant="top" src="https://cdn.pixabay.com/photo/2014/09/17/20/26/restaurant-449952_960_720.jpg" />
                 <Card.Body>
                     <Card.Title>{e.name}</Card.Title>
                     <Card.Text>
-                    Address: {e.cityName}, {e.streetName}
+                    Address: {e.city.name}
     </Card.Text>
                 </Card.Body>
                 <ListGroup className="list-group-flush">
                     <ListGroupItem>Stars: {e.rating}</ListGroupItem>
-                    <ListGroupItem><Badge variant="secondary">{e.tags[0]}</Badge></ListGroupItem>
-                    {e.tags[1] === "Cheap" ? <ListGroupItem><Badge variant="success">{e.tags[1]}</Badge></ListGroupItem> : 
-                    e.tags[1] === "Regular" ? <ListGroupItem><Badge variant="warning">{e.tags[1]}</Badge></ListGroupItem> :
-                    <ListGroupItem><Badge variant="danger">{e.tags[1]}</Badge></ListGroupItem>}
-                    {e.tags[2] === "Vegan" ? <ListGroupItem><Badge variant="success">{e.tags[2]}</Badge></ListGroupItem> : 
-                    e.tags[2] === "Vegetarian" ? <ListGroupItem><Badge variant="warning">{e.tags[2]}</Badge></ListGroupItem> :
-                    <ListGroupItem><Badge variant="danger">{e.tags[2]}</Badge></ListGroupItem>}
+                    {e.tags[0].name === "cheap" || e.tags[0].name === "vegan" ? <ListGroupItem><Badge variant="success">{e.tags[0].name}</Badge></ListGroupItem> : 
+                    e.tags[0].name === "regular" || e.tags[0].name === "vegetarian" ? <ListGroupItem><Badge variant="warning">{e.tags[0].name}</Badge></ListGroupItem> :
+                    <ListGroupItem><Badge variant="danger">{e.tags[0].name}</Badge></ListGroupItem>}
                 </ListGroup>
                 <Card.Body>
-                    <Card.Link href={`/restaurant/${e.name}`}>Visit Restaurant</Card.Link>
+                    <Card.Link href={`/restaurant/${e._id}`}>Visit Restaurant</Card.Link>
                 </Card.Body>
             </Card>
                 </>

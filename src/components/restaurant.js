@@ -1,7 +1,7 @@
 import { useParams, useHistory, useLocation } from 'react-router-dom'
 import React, { useEffect, useState, useCallback } from 'react'
 import { Container, Row, Col } from 'reactstrap';
-import { Badge } from 'react-bootstrap'
+import { Badge, ListGroupItem } from 'react-bootstrap'
 import './restaurant.css'
 import Axios from 'axios'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
@@ -10,11 +10,14 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 
 
-export default function Restaurant({ data }) {
+export default function Restaurant() {
     const [center, setCenter] = useState()
     const [mapData, setMapData] = useState({})
+    const [data, setData] = useState('')
     const [zoomLevel, setZoomLevel] = useState(8)
     const { name } = useParams()
+
+    
 
     const containerStyle = {
         width: '400px',
@@ -23,25 +26,36 @@ export default function Restaurant({ data }) {
 
     useEffect(() => {
         setLocation()
-        fetchData();
-      }, []);
+        
+        fetchRestaurantData()
+    }, []);
+
+    useEffect(() => {
+        if (data) fetchData()
+    }, [data])
+
+    const fetchRestaurantData = async () => {
+        await Axios.get(`https://yelp-db.herokuapp.com/restaurants/${name}`)
+            .then((response) => setData(response.data.data))
+            .catch((error) => console.log(error));
+    };
 
     const fetchData = async () => {
-        await Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${data[1].cityName}, ${data[1].streetName}, Deutschland&key=6002168ae2b4471cbbe0ff9ff0c1be70`)
-          .then((response) => {
-              setMapData(response.data.results[0].geometry)
+        await Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${data.city.name}, Deutschland&key=6002168ae2b4471cbbe0ff9ff0c1be70`)
+            .then((response) => {
+                setMapData(response.data.results[0].geometry)
             })
-          .catch((error) => console.log(error));
-      };
-    
+            .catch((error) => console.log(error));
+    };
+
     const setLocation = () => {
         setCenter(mapData)
-        
-     }
 
-     const setZoom = () => {
-        setZoomLevel(16)
-     }
+    }
+
+    const setZoom = () => {
+        setZoomLevel(13)
+    }
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -59,37 +73,32 @@ export default function Restaurant({ data }) {
     const onUnmount = React.useCallback(function callback(map) {
         setMap(null)
     }, [])
-    
+
     return (
         <>
-            <h1>This is the restaurant page for restaurant {name}</h1>
 
             <Container>
                 <Row>
                     <Col>
                         {data &&
                             <>
-                                <img src={data[1].image} />
-                                <h1>{data[1].name}</h1>
-                                {data[1].rating >= 4.5 ? <Badge variant="success">Stars: {data[1].rating}</Badge> :
-                                    data[1].rating >= 3.5 ? <Badge variant="warning">Stars: {data[1].rating}</Badge> :
-                                        <Badge variant="danger">Stars: {data[1].rating}</Badge>}
-                                <p>Address: {data[1].cityName}, {data[1].streetName}</p>
-                                <Badge variant="secondary">{data[1].tags[0]}</Badge>
-                                {data[1].tags[1] === "Cheap" ? <Badge variant="success">{data[1].tags[1]}</Badge> :
-                                    data[1].tags[1] === "Regular" ? <Badge variant="warning">{data[1].tags[1]}</Badge> :
-                                        <Badge variant="danger">{data[1].tags[1]}</Badge>}
-                                {data[1].tags[2] === "Vegan" ? <Badge variant="success">{data[1].tags[2]}</Badge> :
-                                    data[1].tags[2] === "Vegetarian" ? <Badge variant="warning">{data[1].tags[2]}</Badge> :
-                                        <Badge variant="danger">{data[1].tags[2]}</Badge>}
-                                <p>{data[1].description}</p>
+                                <img src="https://cdn.pixabay.com/photo/2014/09/17/20/26/restaurant-449952_960_720.jpg" />
+                                <h1>{data.name}</h1>
+                                {data.rating >= 4.0 ? <Badge variant="success">Stars: {data.rating}</Badge> :
+                                    data.rating >= 3.0 ? <Badge variant="warning">Stars: {data.rating}</Badge> :
+                                        <Badge variant="danger">Stars: {data.rating}</Badge>}
+                                <p>Address: {data.city.name}</p>
+                                {data.tags[0].name === "cheap" || data.tags[0].name === "vegan" ? <ListGroupItem><Badge variant="success">{data.tags[0].name}</Badge></ListGroupItem> :
+                                    data.tags[0].name === "regular" || data.tags[0].name === "vegetarian" ? <ListGroupItem><Badge variant="warning">{data.tags[0].name}</Badge></ListGroupItem> :
+                                        <ListGroupItem><Badge variant="danger">{data.tags[0].name}</Badge></ListGroupItem>}
+                                <p>{data.description}</p>
                             </>
                         }
                     </Col>
                     <Col>
-                    <button onClick={(() => {
-                        setLocation()
-                        setZoom()
+                        <button onClick={(() => {
+                            setLocation()
+                            setZoom()
                         })}>Load Map</button>
                         <div className="mapDiv">
                             {isLoaded && center && <GoogleMap
